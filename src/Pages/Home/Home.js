@@ -3,13 +3,15 @@ import { useState } from "react";
 import { useHistory } from "react-router";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 import Categories from "../../Data/Categories";
+import AdvancedPopup from "../../components/Popup/Popup";
 import "./Home.css";
 
 const Home = ({ name, setName, fetchQuestions }) => {
   const [category, setCategory] = useState("");
   const [difficulty, setDifficulty] = useState("");
   const [error, setError] = useState(false);
-  const [markingScheme, setMarkingScheme] = useState(""); 
+  const [markingScheme, setMarkingScheme] = useState("");
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   const history = useHistory();
 
@@ -19,7 +21,7 @@ const Home = ({ name, setName, fetchQuestions }) => {
       return;
     } else {
       setError(false);
-       localStorage.setItem("markingScheme", markingScheme);
+      localStorage.setItem("markingScheme", markingScheme);
       fetchQuestions(category, difficulty);
       history.push("/quiz");
     }
@@ -30,7 +32,7 @@ const Home = ({ name, setName, fetchQuestions }) => {
       <div className="settings">
         <span style={{ fontSize: 30 }}>Quiz Settings</span>
         <div className="settings__select">
-           {error && <ErrorMessage>Please Fill all the feilds</ErrorMessage>}
+          {error && <ErrorMessage>Please Fill all the feilds</ErrorMessage>}
           <TextField
             style={{ marginBottom: 25 }}
             label="Enter Your Name"
@@ -69,7 +71,7 @@ const Home = ({ name, setName, fetchQuestions }) => {
               Hard
             </MenuItem>
           </TextField>
-           <TextField
+          <TextField
             select
             label="Select Marking Scheme"
             value={markingScheme}
@@ -80,20 +82,38 @@ const Home = ({ name, setName, fetchQuestions }) => {
             <MenuItem key="Normal" value="normal">
               Normal Marking
             </MenuItem>
-           <MenuItem key="Negative" value="negative">
-             Negative Marking
+            <MenuItem key="Negative" value="negative">
+              Negative Marking
             </MenuItem>
-         </TextField>
-          <Button
-            variant="contained"
-            color="primary"
-            size="large"
-            onClick={handleSubmit}
-          >
-            Start Quiz
-          </Button>
+          </TextField>
+
+          <div style={{ display: "flex", gap: 12, marginBottom: 20 }}>
+            <Button
+              variant="outlined"
+              color="default"
+              size="large"
+              onClick={() => setShowAdvanced(true)}
+            >
+              Advanced Quiz Settings
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              size="large"
+              onClick={handleSubmit}
+            >
+              Start Quiz
+            </Button>
+          </div>
         </div>
       </div>
+
+      <AdvancedPopup
+        open={showAdvanced}
+        onClose={() => setShowAdvanced(false)}
+        onApply={() => setShowAdvanced(false)}
+      />
+
       <img src="/quiz.svg" className="banner" alt="quiz app" />
     </div>
   );

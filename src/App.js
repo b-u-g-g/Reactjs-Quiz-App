@@ -29,7 +29,9 @@ function App() {
   }, []);
 
   const fetchQuestions = async (category = "", difficulty = "") => {
-    const base = `https://opentdb.com/api.php?amount=10${
+    const amount = Number(localStorage.getItem("questionAmount")) || 10;
+
+    const base = `https://opentdb.com/api.php?amount=${amount}${
       category ? `&category=${category}` : ""
     }${difficulty ? `&difficulty=${difficulty}` : ""}&type=multiple&encode=url3986${
       token ? `&token=${token}` : ""
@@ -37,7 +39,6 @@ function App() {
 
     const { data } = await axios.get(base);
 
-    // response_code: 0=OK, 4=Token empty (pool exhausted)
     if (data.response_code === 4 && token) {
       await axios.get(
         `https://opentdb.com/api_token.php?command=reset&token=${token}`
