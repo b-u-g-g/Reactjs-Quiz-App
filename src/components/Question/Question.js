@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useHistory } from "react-router";
 import "./Question.css";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
+import { getNextScore } from "../Score/Score";
 
 const Question = ({
   currQues,
@@ -13,6 +14,10 @@ const Question = ({
   setScore,
   score,
   setQuestions,
+  setCorrectCount,
+  setWrongCount,
+  correctCount,
+  wrongCount,
 }) => {
   const [selected, setSelected] = useState();
   const [error, setError] = useState(false);
@@ -27,17 +32,27 @@ const Question = ({
 
   const handleCheck = (i) => {
     setSelected(i);
-    if (i === correct) setScore(score + 1);
+    const isCorrect = i === correct;
+    setScore(getNextScore(score, isCorrect));
+    if (isCorrect) setCorrectCount(correctCount + 1);
+    else setWrongCount(wrongCount + 1);
     setError(false);
   };
 
   const handleNext = () => {
-    if (currQues > 8) {
-      history.push("/result");
+    const isLast = currQues >= (questions?.length ?? 0) - 1;
+    if (isLast) {
+      if (selected) {
+        history.push("/result", { score, correctCount, wrongCount });
+      } else {
+        setError("Please select an option first");
+      }
     } else if (selected) {
       setCurrQues(currQues + 1);
       setSelected();
-    } else setError("Please select an option first");
+    } else {
+      setError("Please select an option first");
+    }
   };
 
   const handleQuit = () => {
@@ -83,7 +98,7 @@ const Question = ({
             style={{ width: 185 }}
             onClick={handleNext}
           >
-            {currQues > 20 ? "Submit" : "Next Question"}
+            {currQues >= (questions?.length ?? 0) - 1 ? "Submit" : "Next Question"}
           </Button>
         </div>
       </div>

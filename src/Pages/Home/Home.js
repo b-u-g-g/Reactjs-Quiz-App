@@ -9,15 +9,17 @@ const Home = ({ name, setName, fetchQuestions }) => {
   const [category, setCategory] = useState("");
   const [difficulty, setDifficulty] = useState("");
   const [error, setError] = useState(false);
+  const [markingScheme, setMarkingScheme] = useState(""); 
 
   const history = useHistory();
 
   const handleSubmit = () => {
-    if (!category || !difficulty || !name) {
+    if (!category || !difficulty || !name || !markingScheme) {
       setError(true);
       return;
     } else {
       setError(false);
+       localStorage.setItem("markingScheme", markingScheme);
       fetchQuestions(category, difficulty);
       history.push("/quiz");
     }
@@ -28,7 +30,7 @@ const Home = ({ name, setName, fetchQuestions }) => {
       <div className="settings">
         <span style={{ fontSize: 30 }}>Quiz Settings</span>
         <div className="settings__select">
-          {error && <ErrorMessage>Please Fill all the feilds</ErrorMessage>}
+           {error && <ErrorMessage>Please Fill all the feilds</ErrorMessage>}
           <TextField
             style={{ marginBottom: 25 }}
             label="Enter Your Name"
@@ -67,6 +69,21 @@ const Home = ({ name, setName, fetchQuestions }) => {
               Hard
             </MenuItem>
           </TextField>
+           <TextField
+            select
+            label="Select Marking Scheme"
+            value={markingScheme}
+            onChange={(e) => setMarkingScheme(e.target.value)}
+            variant="outlined"
+            style={{ marginBottom: 30 }}
+          >
+            <MenuItem key="Normal" value="normal">
+              Normal Marking
+            </MenuItem>
+           <MenuItem key="Negative" value="negative">
+             Negative Marking
+            </MenuItem>
+         </TextField>
           <Button
             variant="contained"
             color="primary"

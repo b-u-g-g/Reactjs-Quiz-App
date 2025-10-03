@@ -6,6 +6,9 @@ import "./Quiz.css";
 const Quiz = ({ name, questions, score, setScore, setQuestions }) => {
   const [options, setOptions] = useState();
   const [currQues, setCurrQues] = useState(0);
+  const [correctCount, setCorrectCount] = useState(0);
+  const [wrongCount, setWrongCount] = useState(0);
+
 
   useEffect(() => {
     setOptions(
@@ -45,6 +48,10 @@ const Quiz = ({ name, questions, score, setScore, setQuestions }) => {
             score={score}
             setScore={setScore}
             setQuestions={setQuestions}
+            correctCount={correctCount}
+            wrongCount={wrongCount}
+            setCorrectCount={setCorrectCount}
+            setWrongCount={setWrongCount}
           />
         </>
       ) : (
